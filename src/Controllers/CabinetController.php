@@ -11,6 +11,7 @@ namespace App\Controllers;
 
 use App\Models\News;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class CabinetController
@@ -31,27 +32,29 @@ class CabinetController
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
     }
     //post
-    public function store(){
+    public function store(Request $request){
         if(!isset($_SESSION['logged']))
             return new RedirectResponse('/login');
 
-        if (isset($_POST['name']) && isset($_POST['url']))
-            $this->news->setResource($_POST['name'],$_POST['url']);
+        if ($request->get('name') && $request->get('url'))
+            $this->news->setResource($request->get('name'),$request->get('url'));
 
         return new RedirectResponse('/cabinet');
     }
     //put
-    public function update($id){
+    public function update(Request $request, int $id){
         if(!isset($_SESSION['logged']))
             return new RedirectResponse('/login');
 
-        if (isset($id) && isset($_POST['name']) && isset($_POST['url']))
-            $this->news->updateResource($id, $_POST['name'],$_POST['url']);
+        $name = $request->get('name');
+        $url = $request->get('url');
+        if (isset($id) && $name && $url)
+            $this->news->updateResource($id, $name, $url);
 
         return new RedirectResponse('/cabinet');
     }
     //delete
-    public function destroy($id){
+    public function destroy(Request $request, int $id){
         if(!isset($_SESSION['logged']))
             return new RedirectResponse('/login');
 

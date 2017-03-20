@@ -35,13 +35,9 @@ class Cabinet implements ControllerProviderInterface
 
 //        $cabinet->get("/edit/{id}", "App\\Controllers\\CabinetController::edit");
 
-        $cabinet->post("/cabinet/{id}/put", "App\\Controllers\\CabinetController::update");
+        $cabinet->put("/cabinet/{id}", "App\\Controllers\\CabinetController::update")->assert('id','\d+');
 
-        $cabinet->post("/cabinet/{id}/delete", "App\\Controllers\\CabinetController::destroy");
-
-//        $cabinet->put("/cabinet/{id}", "App\\Controllers\\CabinetController::update");
-//
-//        $cabinet->delete("/cabinet/{id}", "App\\Controllers\\CabinetController::destroy");
+        $cabinet->delete("/cabinet/{id}", "App\\Controllers\\CabinetController::destroy")->assert('id','\d+');
 
         return $cabinet;
     }

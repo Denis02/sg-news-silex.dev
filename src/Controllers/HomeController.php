@@ -55,6 +55,8 @@ class HomeController
             }
             else {
                 $_SESSION['auth_error'] = 'Невірний логін або пароль!';
+//                $app['session']->set('auth_error','Невірний логін або пароль!');
+
             }
         }
 
