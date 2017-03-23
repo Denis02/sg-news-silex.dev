@@ -4,7 +4,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 require_once '../vendor/autoload.php';
 
-session_start();
+//session_start();
 date_default_timezone_set('europe/kiev');
 
 // Константы проекта
@@ -19,10 +19,10 @@ Request::enableHttpMethodParameterOverride();
 
 
 // app/providers.php
-$app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__ . '/../app/views',
-));
-//$app->register(new Silex\Provider\SessionServiceProvider());
+//$app->register(new Silex\Provider\TwigServiceProvider(), array(
+//    'twig.path' => __DIR__ . '/../app/views',
+//));
+$app->register(new Silex\Provider\SessionServiceProvider());
 
 $app->error(function (\Exception $e, Request $request, $code){
     switch ($code){
@@ -39,15 +39,6 @@ $app->get('/login', 'App\Controllers\HomeController::getLogin');
 $app->post('/login', 'App\Controllers\HomeController::postLogin');
 $app->get('/logout', 'App\Controllers\HomeController::getLogout');
 
-$app->mount("/", new App\Providers\Cabinet());
-
+$app->mount("/cabinet", new App\Providers\Cabinet())
+    ->before('App\Controllers\CabinetController::_before');
 $app->run();
-
-//$app->get('/users/{id}', 'App\Controllers\HomeController::user')
-//    ->value('id',0)
-//    ->assert('id','\d+');
-
-
-
-
-

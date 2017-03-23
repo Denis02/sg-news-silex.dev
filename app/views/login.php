@@ -1,7 +1,7 @@
-<?php if(isset($_SESSION['auth_error'])): ?>
+<?php if(isset($auth_error)): ?>
     <ul class="list-group">
         <li class="list-group-item list-group-item-danger">
-            <?= $_SESSION['auth_error'] ?>
+            <?= $auth_error ?>
         </li>
     </ul>
 <?php endif;?>

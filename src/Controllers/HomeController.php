@@ -11,14 +11,16 @@ namespace App\Controllers;
 
 use App\Models\News;
 use App\Models\User;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class HomeController
 {
-    public function index(){
+    public function index(Request $request){
         // получение номера страницы и значения для лимита
-        $query = parse_url($_SERVER['REQUEST_URI'])['query'] ?? false;
+        $query = parse_url($request->getRequestUri())['query'] ?? false;
         $cur_page = 1;
         $per_page = 50;
         if ($query)
@@ -31,44 +33,45 @@ class HomeController
             }
         }
 
+        $logged = $request->getSession()->get('logged');
         extract((new News())->getNews($cur_page,$per_page), EXTR_PREFIX_INVALID, '_');
         $content = APP_DIR.'views/news.php';
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
     }
 
-    public function getLogin()
+    public function getLogin(Request $request)
     {
+        $logged = $request->getSession()->get('logged');
+        if ($logged) return new RedirectResponse('/cabinet');
+
+        $auth_error = $request->getSession()->get('auth_error');
         $content = APP_DIR.'views/login.php';
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
     }
 
-    public function postLogin()
+    public function postLogin(Request $request)
     {
+        $session = $request->getSession();
+        if ($session->get('auth_error'))
+            $session->remove('auth_error');
 
-        if (isset($_SESSION['auth_error']))
-            unset($_SESSION['auth_error']);
-
-        if (isset($_POST['login']) && isset($_POST['password'])) {
-            if ((new User)->login($_POST['login'], $_POST['password'])) {
-                $_SESSION['logged'] = true;
+        $login = $request->request->get('login');
+        $pass = $request->request->get('password');
+        if (isset($login) && isset($pass)) {
+            if ((new User)->login($login, $pass)) {
+                $session->set('logged', true);
                 return new RedirectResponse('/cabinet');
             }
             else {
-                $_SESSION['auth_error'] = 'Невірний логін або пароль!';
-//                $app['session']->set('auth_error','Невірний логін або пароль!');
-
+                $session->set('auth_error', 'Невірний логін або пароль!');
             }
         }
-
         return new RedirectResponse('/login');
     }
 
-    public function getLogout()
+    public function getLogout(Request $request)
     {
-        if(isset($_SESSION['logged'])){
-            unset($_SESSION['logged']);
-        }
-
+        $request->getSession()->remove('logged');
         return new RedirectResponse('/');
     }
 

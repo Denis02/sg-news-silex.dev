@@ -22,7 +22,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <?php
-                if(isset($_SESSION['logged']))
+                if($logged)
                     echo '<li><a href="/cabinet">
                         <span class="glyphicon glyphicon-user"></span>
                         Кабінет</a></li>

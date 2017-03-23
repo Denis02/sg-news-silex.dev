@@ -10,6 +10,7 @@ namespace App\Controllers;
 
 
 use App\Models\News;
+use Silex\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -22,19 +23,23 @@ class CabinetController
     {
         $this->news = new News();
     }
+    public static function _before(Request $request)
+    {
+//        $logged = $request->getSession()->get('logged');
+//        if (! $logged) return new RedirectResponse('/login');
+    }
     //get
-    public function index(){
-        if(!isset($_SESSION['logged']))
-            return new RedirectResponse('/login');
-
+    public function index(Request $request){
+        $logged = $request->getSession()->get('logged');
+        if (! $logged) return new RedirectResponse('/login');
         $items = $this->news->getResources();
         $content = APP_DIR.'views/cabinet.php';
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
     }
     //post
     public function store(Request $request){
-        if(!isset($_SESSION['logged']))
-            return new RedirectResponse('/login');
+        $logged = $request->getSession()->get('logged');
+        if (! $logged) return new RedirectResponse('/login');
 
         if ($request->get('name') && $request->get('url'))
             $this->news->setResource($request->get('name'),$request->get('url'));
@@ -43,8 +48,8 @@ class CabinetController
     }
     //put
     public function update(Request $request, int $id){
-        if(!isset($_SESSION['logged']))
-            return new RedirectResponse('/login');
+        $logged = $request->getSession()->get('logged');
+        if (! $logged) return new RedirectResponse('/login');
 
         $name = $request->get('name');
         $url = $request->get('url');
@@ -55,8 +60,8 @@ class CabinetController
     }
     //delete
     public function destroy(Request $request, int $id){
-        if(!isset($_SESSION['logged']))
-            return new RedirectResponse('/login');
+        $logged = $request->getSession()->get('logged');
+        if (! $logged) return new RedirectResponse('/login');
 
         if (isset($id))
             $this->news->deleteResource($id);
