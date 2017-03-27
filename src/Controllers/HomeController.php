@@ -15,6 +15,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class HomeController
 {
@@ -33,7 +34,6 @@ class HomeController
             }
         }
 
-        $logged = $request->getSession()->get('logged');
         extract((new News())->getNews($cur_page,$per_page), EXTR_PREFIX_INVALID, '_');
         $content = APP_DIR.'views/news.php';
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
@@ -49,7 +49,7 @@ class HomeController
         return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
     }
 
-    public function postLogin(Request $request)
+    public function postLogin(Request $request, Application $app)
     {
         $session = $request->getSession();
         if ($session->get('auth_error'))
@@ -57,6 +57,17 @@ class HomeController
 
         $login = $request->request->get('login');
         $pass = $request->request->get('password');
+        $errors = $app['validator']->validate(
+            $request->request->all(),
+            new Assert\Collection(array(
+                'login'=>new Assert\Length(array('min' => 4)),
+//                'login'=>new Assert\Email(),
+                'password'=>new Assert\Length(array('min' => 4))
+            )));
+        if (count($errors) > 0) {
+            $content = APP_DIR.'views/login.php';
+            return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
+        }
         if (isset($login) && isset($pass)) {
             if ((new User)->login($login, $pass)) {
                 $session->set('logged', true);

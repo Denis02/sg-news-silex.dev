@@ -22,7 +22,7 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <?php
-                if($logged)
+                if(isset($request) && $request->getSession()->get('logged'))
                     echo '<li><a href="/cabinet">
                         <span class="glyphicon glyphicon-user"></span>
                         Кабінет</a></li>
@@ -40,6 +40,18 @@
 
     <div class="container-fluid">
         <?php
+            if (isset($errors) && count($errors) > 0):
+                foreach ($errors as $error):
+        ?>
+         <ul class="list-group">
+             <li class="list-group-item list-group-item-danger">
+                <?php echo $error->getPropertyPath().' '.$error->getMessage()."\n"; ?>
+             </li>
+         </ul>
+        <?php
+                endforeach;
+            endif;
+
             if (isset($content))
                 include_once $content;
         ?>

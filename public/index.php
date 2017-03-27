@@ -23,6 +23,7 @@ Request::enableHttpMethodParameterOverride();
 //    'twig.path' => __DIR__ . '/../app/views',
 //));
 $app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
 
 $app->error(function (\Exception $e, Request $request, $code){
     switch ($code){
@@ -39,6 +40,6 @@ $app->get('/login', 'App\Controllers\HomeController::getLogin');
 $app->post('/login', 'App\Controllers\HomeController::postLogin');
 $app->get('/logout', 'App\Controllers\HomeController::getLogout');
 
-$app->mount("/cabinet", new App\Providers\Cabinet())
-    ->before('App\Controllers\CabinetController::_before');
+$app->mount("/cabinet", new App\Providers\Cabinet());
+
 $app->run();

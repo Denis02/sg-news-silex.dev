@@ -12,7 +12,7 @@
         </tr>
         <?php foreach ($items as $item): ?>
         <tr class="success">
-            <form method="POST" action="cabinet/<?= $item['id'] ?>">
+            <form method="POST" action="<?= $item['id'] ?>">
                 <input type="hidden" id="_method" name="_method" value="PUT" />
             <td>
                 <input type="text" class="form-control" id="name" name="name" value="<?= $item['name'] ?>" required>
@@ -26,7 +26,7 @@
             </td>
             </form>
             <td class="text-center">
-                <form method="POST" action="cabinet/<?= $item['id'] ?>">
+                <form method="POST" action="<?= $item['id'] ?>">
                     <input type="hidden" id="_method" name="_method" value="DELETE" />
                     <input type="hidden" class="form-control" name="id" value="<?= $item['id'] ?>">
                     <button type="submit" class="btn btn-danger btn-md"><span class="glyphicon glyphicon-remove"></span></button>
