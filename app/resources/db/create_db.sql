@@ -17,8 +17,9 @@ CREATE TABLE `news` (
 CREATE TABLE `sources` (
 `id` int unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
-  `link` varchar(255) NOT NULL UNIQUE,
-  `feed` varchar(255) NOT NULL
+  `source_link` varchar(255) NOT NULL ,
+  `rss_feed_link` varchar(255) NOT NULL UNIQUE,
+  `is_active` BOOLEAN NOT NULL DEFAULT true
 ) ENGINE='InnoDB';
 
 

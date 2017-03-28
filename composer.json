@@ -2,7 +2,8 @@
     "require": {
         "silex/silex": "^2.0",
         "twig/twig": "^2.2",
-        "symfony/validator": "^3.2"
+        "symfony/validator": "^3.2",
+        "robmorgan/phinx": "^0.8.0"
     },
     "require-dev": {
         "symfony/var-dumper": "dev-master"
