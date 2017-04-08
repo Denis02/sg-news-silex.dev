@@ -30,19 +30,22 @@ class CabinetController
         if (! $logged) return new RedirectResponse('/login');
     }
     //get
-    public function index(Request $request){
-        $items = $this->news->getResources();
-        $content = APP_DIR.'views/cabinet.php';
-        return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
+    public function index(Application $app, Request $request){
+        $data['items'] = $this->news->getResources();
+        $data['logged'] = $request->getSession()->get('logged');
+        $data['errors'] = $request->getSession()->get('errors');
+
+        return $app['twig']->render('cabinet.twig', $data);
     }
     //post
     public function store(Application $app, Request $request){
         $name = $request->get('name');
         $url = $request->get('url');
         $errors = $app['validator']->validate($url, new Assert\Url());
-        if ((count($errors) == 0) && @get_headers($url) && $name && $url)
+        if ((count($errors) == 0) && @get_headers($url) && $name && $url){}
             $this->news->setResource($name,$url);
-
+        dump($errors);
+        $request->getSession()->set('errors', $errors);
         return new RedirectResponse('/cabinet');
     }
     //put

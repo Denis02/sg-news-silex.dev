@@ -1,3 +1,5 @@
+{% extends 'layouts/default.twig' %}
+{% block content %}
 <div>
 
     <table class="table ">
@@ -10,32 +12,34 @@
             <th class="text-center">Змінити</th>
             <th class="text-center">Видалити</th>
         </tr>
-        <?php foreach ($items as $item): ?>
+
+    {% for item in items %}
         <tr class="success">
-            <form method="POST" action="<?= $item['id'] ?>">
+            <form method="POST" action="{{ item['id'] }}">
                 <input type="hidden" id="_method" name="_method" value="PUT" />
             <td>
-                <input type="text" class="form-control" id="name" name="name" value="<?= $item['name'] ?>" required>
+                <input type="text" class="form-control" id="name" name="name" value="{{ item['name'] }}" required>
             </td>
             <td>
-                <input type="url" class="form-control" id="url" name="url" value="<?= $item['url'] ?>" required>
+                <input type="url" class="form-control" id="url" name="url" value="{{ item['url'] }}" required>
             </td>
             <td class="text-center">
-                    <input type="hidden" class="form-control" name="id" value="<?= $item['id'] ?>">
+                    <input type="hidden" class="form-control" name="id" value="{{ item['id'] }}">
                     <button type="submit" class="btn btn-info btn-md"><span class="glyphicon glyphicon-pencil"></span></button>
             </td>
             </form>
             <td class="text-center">
-                <form method="POST" action="<?= $item['id'] ?>">
+                <form method="POST" action="{{ item['id'] }}">
                     <input type="hidden" id="_method" name="_method" value="DELETE" />
-                    <input type="hidden" class="form-control" name="id" value="<?= $item['id'] ?>">
+                    <input type="hidden" class="form-control" name="id" value="{{ item['id'] }}">
                     <button type="submit" class="btn btn-danger btn-md"><span class="glyphicon glyphicon-remove"></span></button>
                 </form>
             </td>
         </tr>
-        <?php endforeach; ?>
+    {% endfor %}
 
-        <tr>
+
+            <tr>
             <th colspan="4"><h1><small>Новий ресурс</small></h1></th>
         </tr>
         <tr class="info">
@@ -60,3 +64,4 @@
     </table>
 
 </div>
+{% endblock %}

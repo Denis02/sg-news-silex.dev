@@ -19,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class HomeController
 {
-    public function index(Request $request){
+    public function index(Application $app, Request $request){
         // получение номера страницы и значения для лимита
         $query = parse_url($request->getRequestUri())['query'] ?? false;
         $cur_page = 1;
@@ -34,19 +34,24 @@ class HomeController
             }
         }
 
-        extract((new News())->getNews($cur_page,$per_page), EXTR_PREFIX_INVALID, '_');
-        $content = APP_DIR.'views/news.php';
-        return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
+        $data = (new News())->getNews($cur_page,$per_page);
+        $data['logged'] = $request->getSession()->get('logged');
+        return $app['twig']->render('news.twig', $data);
     }
 
-    public function getLogin(Request $request)
+    public function getLogin(Application $app, Request $request)
     {
         $logged = $request->getSession()->get('logged');
         if ($logged) return new RedirectResponse('/cabinet');
 
-        $auth_error = $request->getSession()->get('auth_error');
-        $content = APP_DIR.'views/login.php';
-        return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
+        $errors = $request->getSession()->get('errors');
+//        $content = APP_DIR.'views/login.twig';
+//        return (new Response)->setContent(include APP_DIR.'views/layouts/default.twig');
+
+        return $app['twig']->render('login.twig', array(
+            'logged' => $logged,
+            'errors' => $errors
+        ));
     }
 
     public function postLogin(Request $request, Application $app)
@@ -60,13 +65,13 @@ class HomeController
         $errors = $app['validator']->validate(
             $request->request->all(),
             new Assert\Collection(array(
-                'login'=>new Assert\Length(array('min' => 4)),
+                'login'=>new Assert\Length(array('min' => 8)),
 //                'login'=>new Assert\Email(),
                 'password'=>new Assert\Length(array('min' => 4))
             )));
         if (count($errors) > 0) {
-            $content = APP_DIR.'views/login.php';
-            return (new Response)->setContent(include APP_DIR.'views/layouts/default.php');
+            $request->getSession()->set('errors',$errors);
+            return new RedirectResponse('/login');
         }
         if (isset($login) && isset($pass)) {
             if ((new User)->login($login, $pass)) {

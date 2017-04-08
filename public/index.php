@@ -19,9 +19,9 @@ Request::enableHttpMethodParameterOverride();
 
 
 // app/providers.php
-//$app->register(new Silex\Provider\TwigServiceProvider(), array(
-//    'twig.path' => __DIR__ . '/../app/views',
-//));
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
+    'twig.path' => __DIR__ . '/../app/views',
+));
 $app->register(new Silex\Provider\SessionServiceProvider());
 $app->register(new Silex\Provider\ValidatorServiceProvider());
 

@@ -50,7 +50,9 @@ class News
         $rows = $this->db->query("SELECT COUNT(*) as count FROM news")->fetchColumn();
         // получение записей из таблице, необходимых для текущей страницы
         $items = $this->db->query("SELECT * FROM news ORDER BY `pub_date` DESC  LIMIT $start, $per_page")->fetchAll();
+        $num_pages = ceil($rows / $per_page);
+        $page = 0;
 
-        return ['quantity'=>$rows,'items'=>$items,'per_page'=>$per_page,'cur_page'=>$cur_page];
+        return ['quantity'=>$rows,'items'=>$items,'per_page'=>$per_page,'cur_page'=>$cur_page, 'num_pages'=>$num_pages, 'page'=>$page];
     }
 }

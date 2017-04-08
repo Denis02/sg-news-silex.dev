@@ -1,12 +1,6 @@
-<?php if(isset($auth_error)): ?>
-    <ul class="list-group">
-        <li class="list-group-item list-group-item-danger">
-            <?= $auth_error ?>
-        </li>
-    </ul>
-<?php endif;?>
+{% extends 'layouts/default.twig' %}
 
-
+{% block content %}
 <div class="row login-form">
     <div class="col-md-12">
         <form class="form-horizontal" method="POST">
@@ -33,3 +27,4 @@
         </form>
     </div>
 </div>
+{% endblock %}

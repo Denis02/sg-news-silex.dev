@@ -1,0 +1,50 @@
+{% extends 'layouts/default.twig' %}
+
+{% block content %}
+
+{% for item in items %}
+
+    <div class="panel panel-default">
+
+        <div class="panel-heading">
+            <a target="_blank" href="{{ item['link'] }}">
+                {{ item['id'] }} || {{ item['title'] }}
+            </a>
+        </div>
+
+        <div class="panel-body">{{ item['description']|raw }}</div>
+
+        <div class="panel-footer">
+            {{ item['pub_date'] }}
+            <a target="_blank" href="{{ item['source'] }}">{{ item['source'] }}</a>
+        </div>
+
+    </div>
+{% endfor %}
+
+    {#Пагинация#}
+    <ul class="pagination">
+        {% if num_pages > 1 %}
+            {% if cur_page > 1 %}
+                <li><a href="?page=1">«</a></li>
+            {% endif %}
+            {% if cur_page > 6 %}
+                <li class="disabled"><a>...</a></li>
+            {% endif %}
+        {% for paginationItem in 1..num_pages %}
+            {% if paginationItem == cur_page %}
+                <li class="active"><a href="?page={{ paginationItem }}">{{ paginationItem }}</a></li>
+            {% elseif cur_page < paginationItem+6 and cur_page > paginationItem-6 %}
+                <li><a href="?page={{ paginationItem }}">{{ paginationItem }}</a></li>
+            {% endif %}
+        {% endfor %}
+            {% if num_pages > cur_page+6 %}
+                <li class="disabled"><a>...</a></li>
+            {% endif %}
+        {% endif %}
+        {% if num_pages > 2 and num_pages > cur_page%}
+            <li><a href="?page={{ num_pages }}">»</a></li>
+        {% endif %}
+    </ul>
+
+{% endblock %}
